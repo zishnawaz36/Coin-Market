@@ -7,9 +7,11 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 function App(){
   const [info, setInfo] = useState([]);
+  const [loading, setLoading] = useState(false);
     useEffect(() => {
 
         const fetchdata = async () => {
+            setLoading(true);
             try {
                 const response = await axios.get("https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest", {
                     headers: {
@@ -37,6 +39,9 @@ function App(){
                 setInfo(overallArray);
             } catch (err) {
                 console.log("Error to connect", err.message);
+                setLoading(false);
+            } finally {
+              setLoading(false);
             }
         };
         fetchdata();
@@ -50,9 +55,10 @@ function App(){
          element={<CryptoList info={info} />}/>
          <Route path='/exchange' 
          element={<Exchange info={info} />}></Route>
-       
+        
     </Routes>
     </BrowserRouter>
+    {loading && <div className="loader">Loading...</div>}
     </>
   )
 }

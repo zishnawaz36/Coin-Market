@@ -5,6 +5,7 @@ function Exchange({ info }) {
   const [exchange, setExchange] = useState({});
   const [amount, setAmount] = useState("");
   const [selectedValue, setSelectedValue] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSelectChange = (event) => {
     setSelectedValue(event.target.value);
@@ -17,6 +18,7 @@ function Exchange({ info }) {
   const fetchExchange = async (event) => {
     event.preventDefault();
     try {
+        setLoading(true);
       const response = await axios.get(
         `https://pro-api.coinmarketcap.com/v2/tools/price-conversion?amount=${amount}&id=${selectedValue}`,
         {
@@ -28,6 +30,9 @@ function Exchange({ info }) {
       setExchange(response.data.data);
     } catch (err) {
       console.log("Error to connect", err.message);
+      setLoading(false);
+    } finally {
+        setLoading(false);
     }
   };
 
@@ -65,7 +70,7 @@ function Exchange({ info }) {
           <button 
             type="submit" 
             disabled={!selectedValue || !amount}
-            className={`bg-blue-500 text-white py-2 px-4 rounded focus:outline-none hover:bg-blue-600 transition duration-200 ${!selectedValue || !amount ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`bg-blue-500 text-white py-2 px-4 rounded focus:outline-none hover:bg-blue-600 transition duration-200 ${(!selectedValue || !amount || amount < 0) ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             Convert
           </button>
@@ -80,6 +85,7 @@ function Exchange({ info }) {
       ) : (
         <p className="mt-4 text-gray-600">Nothing to show</p>
       )}
+      {loading && <div className="loader">Loading...</div>}
     </div>
   );
 }
