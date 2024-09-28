@@ -20,14 +20,9 @@ function Exchange({ info }) {
     try {
         setLoading(true);
       const response = await axios.get(
-        `https://pro-api.coinmarketcap.com/v2/tools/price-conversion?amount=${amount}&id=${selectedValue}`,
-        {
-          headers: {
-            "X-CMC_PRO_API_KEY": "56f87733-313e-48c1-a2ab-4de1ec08f923",
-          },
-        }
+        `https://coin-market-service.vercel.app/api/exchange/${amount}/${selectedValue}`
       );
-      setExchange(response.data.data);
+      setExchange(response.data);
     } catch (err) {
       console.log("Error to connect", err.message);
       setLoading(false);

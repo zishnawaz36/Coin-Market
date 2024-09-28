@@ -13,26 +13,19 @@ function App(){
         const fetchdata = async () => {
             setLoading(true);
             try {
-                const response = await axios.get("https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest", {
-                    headers: {
-                        'X-CMC_PRO_API_KEY': '56f87733-313e-48c1-a2ab-4de1ec08f923' 
-                    }
-                });
-                let resData = response.data.data;
-                 
+                const response = await axios.get("https://coin-market-service.vercel.app/api/listings/latest");
+                
+                let resData = response.data;
                 let idString = "";
                 resData?.map(data => {
                     if(idString.length) {
                         idString+=`,${data["slug"]}`
                     } else idString =`${data["slug"]}`
                 });
-                let URI =`https://pro-api.coinmarketcap.com/v2/cryptocurrency/info?slug=${idString}`;
-                const logoResponse = await axios.get(URI, {
-                    headers: {
-                        'X-CMC_PRO_API_KEY': '56f87733-313e-48c1-a2ab-4de1ec08f923' 
-                    }
-                });
-                let logoData = logoResponse?.data?.data
+                
+                let URI =`https://coin-market-service.vercel.app/api/cryptocurrency/info/${idString}`;
+                const logoResponse = await axios.get(URI);
+                let logoData = logoResponse?.data
                 let overallArray = resData.map(val => {
                     return {...val , "logo": logoData[val.id]["logo"]}
                 });
